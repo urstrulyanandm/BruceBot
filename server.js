@@ -10,27 +10,25 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
-// ✅ Serve static files from 'public' folder
+// ✅ Serve static files from "public"
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ✅ Serve index.html on root
+// ✅ Serve index.html from "public"
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// ✅ POST endpoint for chatbot
+// ✅ Chat endpoint
 app.post('/ask', async (req, res) => {
   const userMessage = req.body.message;
 
   try {
     const response = await axios.post(
-      'https://api.together.xyz/v1/chat/completions', // Use the correct endpoint
+      'https://api.together.xyz/inference', // Replace with real Together endpoint
       {
-        model: 'meta-llama/Llama-3-8b-chat-hf',
-        messages: [
-          { role: 'user', content: userMessage }
-        ],
-        temperature: 0.7,
+        prompt: userMessage,
+        model: 'togethercomputer/llama-2-7b-chat', // example
+        max_tokens: 100,
       },
       {
         headers: {
@@ -40,15 +38,14 @@ app.post('/ask', async (req, res) => {
       }
     );
 
-    const botReply = response.data.choices?.[0]?.message?.content || "No reply received.";
+    const botReply = response.data.output || 'No response';
     res.json({ reply: botReply });
-
-  } catch (error) {
-    console.error('Error from Together API:', error.response?.data || error.message);
-    res.status(500).json({ reply: "Sorry, something went wrong." });
+  } catch (err) {
+    console.error('Error from Together API:', err?.response?.data || err.message);
+    res.status(500).json({ reply: 'Sorry, something went wrong.' });
   }
 });
 
 app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
