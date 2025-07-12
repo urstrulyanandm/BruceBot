@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>BruceBot – Chat</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: url('https://wallpapercave.com/wp/wp2634225.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #ffffff;
+    }
+
+    #chat {
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.75);
+      border-radius: 15px;
+      height: 500px;
+      overflow-y: auto;
+      box-shadow: 0 0 15px #000;
+    }
+
+    .msg {
+      padding: 10px 15px;
+      margin: 10px 0;
+      border-radius: 12px;
+      max-width: 80%;
+    }
+
+    .user {
+      background: #1a1a1a;
+      color: #0f0;
+      text-align: right;
+      margin-left: auto;
+    }
+
+    .bot {
+      background: #333;
+      color: #ffd700;
+      text-align: left;
+      margin-right: auto;
+      position: relative;
+    }
+
+    .bot::before {
+      content: '';
+      display: inline-block;
+      background: url('https://upload.wikimedia.org/wikipedia/en/8/85/Batman_DC_Comics.png') no-repeat center center;
+      background-size: cover;
+      width: 24px;
+      height: 24px;
+      vertical-align: middle;
+      margin-right: 8px;
+      border-radius: 50%;
+    }
+
+    #inputBox {
+      width: 65%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      background: #1c1c1c;
+      color: #fff;
+      font-size: 16px;
+    }
+
+    #sendBtn {
+      padding: 12px 20px;
+      margin-left: 10px;
+      background: #ffd700;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    #header {
+      text-align: center;
+      margin-top: 30px;
+      color: #ffd700;
+      font-size: 28px;
+      text-shadow: 1px 1px 5px #000;
+    }
+
+    @media screen and (max-width: 768px) {
+      #inputBox {
+        width: 60%;
+      }
+      #sendBtn {
+        width: 30%;
+        margin-top: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2 id="header">anand.ai</h2>
+  <div id="chat"></div>
+  <div style="text-align: center; margin-top: 20px;">
+    <input id="inputBox" placeholder="Ask Bruce..." />
+    <button id="sendBtn">Send</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
