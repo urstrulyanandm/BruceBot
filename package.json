@@ -1,7 +1,7 @@
 {
   "name": "brucebot",
   "version": "1.0.0",
-  "main": "server.js",  // optional but cleaner
+  "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
