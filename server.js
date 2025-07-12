@@ -1,52 +1,54 @@
-const express = require("express");
-const axios = require("axios");
-const cors = require("cors");
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const bodyParser = require('body-parser');
+const axios = require('axios');
 
 const app = express();
-const PORT = 3000;
-const TOGETHER_API_KEY = "a26e85e9098fe92f981fe05a8e2d56473ef2eb28d559b97e1d8a21ce8ad79b6e"; // 🔐 Replace this
-const MODEL = "meta-llama/Llama-3-8b-chat-hf";
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(express.json());
-app.use(express.static(__dirname)); // serve index.html, script.js
+app.use(bodyParser.json());
 
-let messageHistory = [
-  { role: "system", content: "You are a helpful assistant." }
-];
+// ✅ Serve static files from 'public' folder
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.post("/api/chat", async (req, res) => {
+// ✅ Serve index.html on root
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// ✅ POST endpoint for chatbot
+app.post('/ask', async (req, res) => {
   const userMessage = req.body.message;
-
-  messageHistory.push({ role: "user", content: userMessage });
 
   try {
     const response = await axios.post(
-      "https://api.together.xyz/v1/chat/completions",
+      'https://api.together.xyz/v1/chat/completions', // Use the correct endpoint
       {
-        model: MODEL,
-        messages: messageHistory,
+        model: 'meta-llama/Llama-3-8b-chat-hf',
+        messages: [
+          { role: 'user', content: userMessage }
+        ],
         temperature: 0.7,
-        max_tokens: 200
       },
       {
         headers: {
-          Authorization: `Bearer ${TOGETHER_API_KEY}`,
-          "Content-Type": "application/json"
-        }
+          Authorization: `Bearer ${process.env.TOGETHER_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
       }
     );
 
-    const botReply = response.data.choices[0].message.content;
-    messageHistory.push({ role: "assistant", content: botReply });
-
+    const botReply = response.data.choices?.[0]?.message?.content || "No reply received.";
     res.json({ reply: botReply });
-  } catch (err) {
-    console.error("Together.ai error:", err.response?.data || err.message);
-    res.status(500).json({ reply: "Error talking to AI." });
+
+  } catch (error) {
+    console.error('Error from Together API:', error.response?.data || error.message);
+    res.status(500).json({ reply: "Sorry, something went wrong." });
   }
 });
 
 app.listen(PORT, () => {
-  console.log(`🔮 Server running at http://localhost:${PORT}`);
+  console.log(`✅ Server running on port ${PORT}`);
 });
